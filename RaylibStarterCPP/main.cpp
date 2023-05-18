@@ -24,6 +24,7 @@
 #define RAYGUI_IMPLEMENTATION
 #define RAYGUI_SUPPORT_ICONS
 #include "raygui.h"
+#include "Game.h"
 
 int main(int argc, char* argv[])
 {
@@ -32,10 +33,14 @@ int main(int argc, char* argv[])
     int screenWidth = 800;
     int screenHeight = 450;
 
+    Game game;
+
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
+
+    game.Init();
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
@@ -49,9 +54,7 @@ int main(int argc, char* argv[])
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
-
-        //DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+        game.Draw();
 
         EndDrawing();
         //----------------------------------------------------------------------------------
