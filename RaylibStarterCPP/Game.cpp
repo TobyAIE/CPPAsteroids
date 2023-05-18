@@ -2,8 +2,16 @@
 #include<raymath.h>
 #include "raylib.h"
 #include "GameObject.h"
+#include <iostream>
 
 GameObject player;
+
+//Stopwatch stopwatch = new Stopwatch();
+//
+//long currentTime = 0;
+//long lastTime = 0;
+
+float deltatime = 0.005f;
 
 void Game::Init()
 {	
@@ -14,7 +22,25 @@ void Game::Init()
 
 void Game::Update()
 {
+	//lastTime = currentTime;
+	//currentTime = stopwatch.ElapsedMilliseconds;
+	//deltaTime = (currentTime - lastTime) / 1000.0f;
 	
+	if (IsKeyDown(KEY_W))
+	{
+		;
+	}
+
+	if (IsKeyDown(KEY_A))
+	{
+		player.rotation -= 1;
+	}
+
+	if (IsKeyDown(KEY_D))
+	{
+		player.rotation += 1;
+	}
+
 }
 
 void Game::Draw()
