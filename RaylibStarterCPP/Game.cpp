@@ -5,7 +5,6 @@
 #include <iostream>
 
 GameObject player;
-//GameObject asteroid;
 
 void Game::Menu()
 {
@@ -40,6 +39,8 @@ void Game::Menu()
 
 void Game::Init()
 {	
+	alive = true;
+	lives = 3;
 	player.position.x = 400;
 	player.position.y = 400;
 	player.rotation = -90;
@@ -91,12 +92,12 @@ void Game::Update()
 
 	if (IsKeyDown(KEY_A))
 	{
-		player.rotation -= 2.0f;
+		player.rotation -= 3.0f;
 	}
 
 	if (IsKeyDown(KEY_D))
 	{
-		player.rotation += 2.0f;
+		player.rotation += 3.0f;
 	}
 
 	//The code here constantly updates the players movement depending on how much thrust the ship has.
@@ -144,6 +145,14 @@ void Game::Update()
 		}
 	}
 
+	for (size_t i = 0; i < asteroidCount; i++)
+	{
+		if (CheckCollisionCircles(player.position, 10, asteroids[i].position, 40))
+		{
+			alive = false;
+		}
+	}
+
 }
 
 void Game::Draw()
@@ -160,7 +169,26 @@ void Game::Draw()
 
 	//DrawTexture(player.objectTexture, 400, 225, WHITE);
 
-	DrawTriangleLines(v1, v2, v3, WHITE);
+	//int livesOffset = 0;
+	//
+	//for (size_t i = 0; i < lives; i++)
+	//{
+	//	Vector2 vl1 = { livesOffset += livesOffset/2, 50 };
+	//	Vector2 vl2 = { livesOffset, 80 };
+	//	Vector2 vl3 = { livesOffset += 10, 80 };
+	//
+	//	DrawTriangleLines(vl1, vl2, vl3, WHITE);
+	//	livesOffset += 40;
+	//}
+
+	if (!alive)
+	{
+		DrawText("You Died...", 325, 400, 30, WHITE);
+	}
+	else
+	{
+		DrawTriangleLines(v1, v2, v3, WHITE);
+	}	
 
 	for (size_t i = 0; i < asteroidCount; i++)
 	{
@@ -168,6 +196,6 @@ void Game::Draw()
 	}
 	
 
-	DrawText("Thrust: ", 10, 10, 20, WHITE);
-	DrawText(to_string(player.shipThrust).c_str(), 110, 10, 20, WHITE);
+	DrawText("Thrust: ", 600, 10, 20, WHITE);
+	DrawText(to_string(player.shipThrust).c_str(), 700, 10, 20, WHITE);
 }

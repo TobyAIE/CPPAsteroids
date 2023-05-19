@@ -16,7 +16,12 @@ private:
 
 	GameObject* asteroids;
 
+	int lives;
+
 	bool startGame;
 	int frameTimer;
+
+	bool alive;
+	bool canSpawn;
 };
 
