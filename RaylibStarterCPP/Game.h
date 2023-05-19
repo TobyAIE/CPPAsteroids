@@ -9,10 +9,14 @@ public:
 	void Update();
 	void Draw();
 
+	void Menu();
+
 private:
 	int asteroidCount;
 
 	GameObject* asteroids;
 
+	bool startGame;
+	int frameTimer;
 };
 

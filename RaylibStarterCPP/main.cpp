@@ -41,6 +41,8 @@ int main(int argc, char* argv[])
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
 
+    game.Menu();
+
     game.Init();
 
     // Main game loop

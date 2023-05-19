@@ -7,6 +7,37 @@
 GameObject player;
 //GameObject asteroid;
 
+void Game::Menu()
+{
+	startGame = false;
+
+	while (!startGame)
+	{
+		BeginDrawing();
+
+		ClearBackground(BLACK);
+
+		frameTimer++;		
+
+		if ((frameTimer/2) % 20)
+		{
+			DrawText("METEORITES", 200, 300, 60, WHITE);
+
+			DrawText("PRESS ENTER", 300, 500, 30, WHITE);
+		}
+		else
+		{
+			DrawText("METEORITES", 200, 300, 60, BLACK);
+
+			DrawText("PRESS ENTER", 300, 500, 30, BLACK);
+		}
+
+		if (IsKeyPressed(KEY_ENTER)) startGame = true;
+
+		EndDrawing();
+	}	
+}
+
 void Game::Init()
 {	
 	player.position.x = 400;
@@ -35,19 +66,6 @@ void Game::Init()
 
 void Game::Update()
 {
-
-	//if (asteroidCount < 6)
-	//{
-	//	GameObject asteroid;
-	//
-	//	asteroid.position.x = rand() % 800;
-	//	asteroid.position.y = rand() % 800;
-	//	asteroid.rotation = rand() % 360;
-	//	//asteroid 40;
-	//	asteroid.position.x += cos(asteroid.rotation * DEG2RAD) * 1.5f;
-	//	asteroid.position.y += sin(asteroid.rotation * DEG2RAD) * 1.5f;
-	//
-	//}
 
 	for (size_t i = 0; i < asteroidCount; i++)
 	{
