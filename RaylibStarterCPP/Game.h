@@ -1,4 +1,7 @@
 #pragma once
+
+#include "GameObject.h"
+
 class Game
 {
 public:
@@ -7,7 +10,9 @@ public:
 	void Draw();
 
 private:
-	float deltatime;
+	int asteroidCount;
+
+	GameObject* asteroids;
 
 };
 

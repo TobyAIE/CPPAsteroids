@@ -13,13 +13,26 @@ public:
 	Vector2 position;
 	float rotation;	
 	float playerHeight;
+	float shipThrust;
 	
+	struct Asteroid
+	{
+		Vector2 asteroidPos;
+		float asteroidRot;
+		float asteroidSize;
+	};
 
 private:	
 
 
 public:
+
+	GameObject();
+	~GameObject();
+
 	void Load(const char* filename);
+
+	//GameObject SpawnAsteroid();
 
 };
 

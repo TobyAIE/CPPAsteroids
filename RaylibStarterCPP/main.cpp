@@ -31,11 +31,12 @@ int main(int argc, char* argv[])
     // Initialization
     //--------------------------------------------------------------------------------------
     int screenWidth = 800;
-    int screenHeight = 450;
+    int screenHeight = 800;
 
-    Game game;
+    
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    Game game;
 
     SetTargetFPS(60);
     //--------------------------------------------------------------------------------------
