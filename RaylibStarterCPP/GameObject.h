@@ -12,8 +12,6 @@ public:
 	Texture2D objectTexture;
 	Vector2 position;
 	float rotation;	
-	float playerHeight;
-	float shipThrust;
 	
 	struct Asteroid
 	{

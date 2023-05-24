@@ -1,10 +1,10 @@
 #include "Game.h"
 #include<raymath.h>
 #include "raylib.h"
-#include "GameObject.h"
 #include <iostream>
 
-GameObject player;
+Player player;
+GameObject playerSpawner;
 
 void Game::Menu()
 {
@@ -18,7 +18,7 @@ void Game::Menu()
 
 		frameTimer++;		
 
-		if ((frameTimer/2) % 20)
+		if ((frameTimer/2) % 30)
 		{
 			DrawText("METEORITES", 200, 300, 60, WHITE);
 
@@ -26,9 +26,7 @@ void Game::Menu()
 		}
 		else
 		{
-			DrawText("METEORITES", 200, 300, 60, BLACK);
-
-			DrawText("PRESS ENTER", 300, 500, 30, BLACK);
+			ClearBackground(BLACK);
 		}
 
 		if (IsKeyPressed(KEY_ENTER)) startGame = true;
@@ -37,9 +35,16 @@ void Game::Menu()
 	}	
 }
 
+void Game::DeInit()
+{
+	delete[] asteroids;
+	delete[] bullets;
+}
+
 void Game::Init()
 {	
 	alive = true;
+	isShooting = false;
 	lives = 3;
 	player.position.x = 400;
 	player.position.y = 400;
@@ -48,19 +53,28 @@ void Game::Init()
 	player.shipThrust = 0.0f;
 
 	asteroidCount = 8;
+	bulletCount = 16;
 
-	asteroids = new GameObject[asteroidCount];
+	asteroids = new Asteroid[asteroidCount];
+	bullets = new Bullet[bulletCount];
 
 	for (size_t i = 0; i < asteroidCount; i++)
 	{
-		GameObject asteroid;
+		Asteroid asteroid;
 
-		asteroid.position.x = rand() % 800;
+		asteroid.position.x = -40;		
 		asteroid.position.y = rand() % 800;
 		asteroid.rotation = rand() % 360;
+		asteroid.destroyed = false;
 
 		asteroids[i] = asteroid;
+	}
 
+	for (size_t i = 0; i < bulletCount; i++)
+	{
+		Bullet bullet;
+
+		bullets[i].isShooting = false;
 	}
 
 }
@@ -74,9 +88,9 @@ void Game::Update()
 		asteroids[i].position.y += sin(asteroids[i].rotation * DEG2RAD) * 1.5f;
 	}
 
-	if (IsKeyDown(KEY_W))
+	if (IsKeyDown(KEY_W) && player.shipThrust < 40.0f)
 	{
-		player.shipThrust += 0.04f;
+		player.shipThrust += 0.06f;
 	}
 	else
 	{
@@ -100,12 +114,48 @@ void Game::Update()
 		player.rotation += 3.0f;
 	}
 
+	if (IsKeyPressed(KEY_SPACE))
+	{
+		//BulletShoot();
+		if (alive)
+		{
+			for (size_t i = 0; i < bulletCount; i++)
+			{
+				if (bullets[i].isShooting == false)
+				{
+
+					float angle = player.rotation * DEG2RAD;
+					angle += (PI / 2);
+					Vector2 v1 = { player.position.x + sinf(angle) * (player.playerHeight), player.position.y - cosf(angle) * (player.playerHeight) };
+
+					std::cout << "FIRE!!" << std::endl;
+					bullets[i].isShooting = true;
+					bullets[i].BulletInit(player, v1);
+					break;
+				}
+			}
+		}
+	}
+
+	for (size_t i = 0; i < bulletCount; i++)
+	{
+		if (bullets[i].isShooting == true) 
+		{
+			//std::cout << "bullet " << i << " is moving" << std::endl;
+			bullets[i].Update();			
+		}
+	}
+
 	//The code here constantly updates the players movement depending on how much thrust the ship has.
 	//Allows for Asteroids momentum movement.
 	player.position.x += cos(player.rotation * DEG2RAD) * player.shipThrust;
 	player.position.y += sin(player.rotation * DEG2RAD) * player.shipThrust;
 
+
+
+	//-------------------------------------------------------------------------------
 	//This code does asteroids looping feature
+	//-------------------------------------------------------------------------------
 	if (player.position.x >= 825)
 	{
 		player.position.x = -20;
@@ -145,6 +195,33 @@ void Game::Update()
 		}
 	}
 
+	for (size_t i = 0; i < bulletCount; i++)
+	{
+		if (bullets[i].position.x >= 845)
+		{
+			bullets[i].position.x = -40;
+		}
+		else if (bullets[i].position.x <= -45)
+		{
+			bullets[i].position.x = 840;
+		}
+
+		if (bullets[i].position.y >= 845)
+		{
+			bullets[i].position.y = -40;
+		}
+		else if (bullets[i].position.y <= -45)
+		{
+			bullets[i].position.y = 840;
+		}
+	}
+	//-------------------------------------------------------------------------------
+
+
+
+	//-------------------------------------------------------------------------------
+	//Collistion between asteroid and player
+	//-------------------------------------------------------------------------------
 	for (size_t i = 0; i < asteroidCount; i++)
 	{
 		if (CheckCollisionCircles(player.position, 10, asteroids[i].position, 40))
@@ -152,7 +229,29 @@ void Game::Update()
 			alive = false;
 		}
 	}
+	//-------------------------------------------------------------------------------
 
+
+	//-------------------------------------------------------------------------------
+	//Collistion between asteroid and bullet
+	//-------------------------------------------------------------------------------
+	for (size_t i = 0; i < asteroidCount; i++)
+	{
+		for (size_t j = 0; j < bulletCount; j++)
+		{
+			if (CheckCollisionCircles(bullets[j].position, 2, asteroids[i].position, 40))
+			{
+				asteroids[i].destroyed = true;
+			}
+		}		
+	}
+	//-------------------------------------------------------------------------------
+
+}
+
+void Game::BulletShoot()
+{
+	
 }
 
 void Game::Draw()
@@ -192,9 +291,20 @@ void Game::Draw()
 
 	for (size_t i = 0; i < asteroidCount; i++)
 	{
-		DrawCircleLines(asteroids[i].position.x, asteroids[i].position.y, 40, WHITE);
+		if (!asteroids[i].destroyed)
+		{
+			DrawCircleLines(asteroids[i].position.x, asteroids[i].position.y, 40, WHITE);
+		}		
 	}
 	
+	for (size_t i = 0; i < bulletCount; i++)
+	{
+		if (bullets[i].isShooting == true)
+		{
+			std::cout << "bullet " << i << " is drawing" << std::endl;
+			bullets[i].Draw();
+		}
+	}
 
 	DrawText("Thrust: ", 600, 10, 20, WHITE);
 	DrawText(to_string(player.shipThrust).c_str(), 700, 10, 20, WHITE);

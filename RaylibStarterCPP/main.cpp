@@ -39,15 +39,16 @@ int main(int argc, char* argv[])
     Game game;
 
     SetTargetFPS(60);
-    //--------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------   
 
-    game.Menu();
+    //game.Menu();
 
     game.Init();
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
+    {       
+
         // Update
         //----------------------------------------------------------------------------------
         game.Update();
@@ -63,6 +64,7 @@ int main(int argc, char* argv[])
         //----------------------------------------------------------------------------------
     }
 
+    game.DeInit();
     // De-Initialization
     //--------------------------------------------------------------------------------------   
     CloseWindow();        // Close window and OpenGL context
