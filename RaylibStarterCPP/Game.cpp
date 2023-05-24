@@ -51,6 +51,7 @@ void Game::Init()
 	player.rotation = -90;
 	player.playerHeight = 20.0f;
 	player.shipThrust = 0.0f;
+	score = 0;
 
 	asteroidCount = 8;
 	bulletCount = 16;
@@ -66,6 +67,7 @@ void Game::Init()
 		asteroid.position.y = rand() % 800;
 		asteroid.rotation = rand() % 360;
 		asteroid.destroyed = false;
+		asteroid.asteroidLevel = 1;
 
 		asteroids[i] = asteroid;
 	}
@@ -84,8 +86,7 @@ void Game::Update()
 
 	for (size_t i = 0; i < asteroidCount; i++)
 	{
-		asteroids[i].position.x += cos(asteroids[i].rotation * DEG2RAD) * 1.5f;
-		asteroids[i].position.y += sin(asteroids[i].rotation * DEG2RAD) * 1.5f;
+		asteroids[i].Update();
 	}
 
 	if (IsKeyDown(KEY_W) && player.shipThrust < 40.0f)
@@ -242,16 +243,27 @@ void Game::Update()
 			if (CheckCollisionCircles(bullets[j].position, 2, asteroids[i].position, 40))
 			{
 				asteroids[i].destroyed = true;
+				bullets[j].isShooting = false;
+
+				switch (asteroids[i].asteroidLevel)
+				{
+				case 1:
+					score += 100;
+					break;
+				case 2:
+					score += 150;
+					break;
+				case 3:
+					score += 250;
+					break;
+				default:
+					break;
+				}
 			}
 		}		
 	}
 	//-------------------------------------------------------------------------------
 
-}
-
-void Game::BulletShoot()
-{
-	
 }
 
 void Game::Draw()
@@ -305,6 +317,8 @@ void Game::Draw()
 			bullets[i].Draw();
 		}
 	}
+
+	DrawText(to_string(score).c_str(), 10, 10, 20, WHITE);
 
 	DrawText("Thrust: ", 600, 10, 20, WHITE);
 	DrawText(to_string(player.shipThrust).c_str(), 700, 10, 20, WHITE);

@@ -30,7 +30,5 @@ public:
 
 	void Load(const char* filename);
 
-	//GameObject SpawnAsteroid();
-
 };
 

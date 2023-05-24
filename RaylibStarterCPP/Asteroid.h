@@ -10,6 +10,8 @@ public:
 
 	void Update();
 
+	int asteroidLevel;
+
 private:
 
 };

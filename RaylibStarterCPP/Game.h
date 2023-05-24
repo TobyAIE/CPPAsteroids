@@ -16,10 +16,10 @@ public:
 
 	void Menu();
 
-	void BulletShoot();
-
 private:
 	int asteroidCount;
+
+	int score;
 
 	int bulletCount;
 
