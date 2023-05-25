@@ -17,6 +17,7 @@ public:
 	void Menu();
 
 private:
+
 	int asteroidCount;
 
 	int score;
