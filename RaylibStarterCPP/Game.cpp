@@ -4,7 +4,8 @@
 #include <iostream>
 
 Player player;
-GameObject playerSpawner;
+
+GameObject spawnCheck;
 
 void Game::Menu()
 {
@@ -46,30 +47,32 @@ void Game::Init()
 	alive = true;
 	isShooting = false;
 	lives = 3;
-	player.position.x = 400;
-	player.position.y = 400;
-	player.rotation = -90;
+	spawnCheck.position.x = 400;
+	spawnCheck.position.y = 400;
+	player.PlayerSpawn();
 	player.playerHeight = 20.0f;
 	player.shipThrust = 0.0f;
 	score = 0;
+	spawnTimer = 0;
+	respawnTimer = 0;
+	canSpawn = true;
+
+	maxAsteroids = 56;
 
 	asteroidCount = 8;
 	bulletCount = 16;
 
-	asteroids = new Asteroid[asteroidCount];
+	asteroids = new Asteroid[maxAsteroids];
 	bullets = new Bullet[bulletCount];
+
+	for (size_t i = 0; i < maxAsteroids; i++)
+	{
+		asteroids[i].destroyed = true;
+	}
 
 	for (size_t i = 0; i < asteroidCount; i++)
 	{
-		Asteroid asteroid;
-
-		asteroid.position.x = -40;		
-		asteroid.position.y = rand() % 800;
-		asteroid.rotation = rand() % 360;
-		asteroid.destroyed = false;
-		asteroid.asteroidLevel = 1;
-
-		asteroids[i] = asteroid;
+		asteroids[i].SpawnAsteroid(1);
 	}
 
 	for (size_t i = 0; i < bulletCount; i++)
@@ -83,36 +86,33 @@ void Game::Init()
 
 void Game::Update()
 {
+	//-------------------------------------------------------------------------------
+	//This will spawn in a new big asteroid once enough small ones have been destroyed
+	//-------------------------------------------------------------------------------
+	if (spawnTimer >= 4)
+	{
+		for (size_t i = 0; i < maxAsteroids; i++)
+		{
+			if (asteroids[i].destroyed)
+			{
+				asteroids[i].SpawnAsteroid(1);
+				spawnTimer = 0;
+				std::cout << "Spawn new asteroid" << std::endl;
+				break;
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------
 
-	for (size_t i = 0; i < asteroidCount; i++)
+	for (size_t i = 0; i < maxAsteroids; i++)
 	{
 		asteroids[i].Update();
 	}
 
-	if (IsKeyDown(KEY_W) && player.shipThrust < 40.0f)
-	{
-		player.shipThrust += 0.06f;
-	}
-	else
-	{
-		if (player.shipThrust <= 0)
-		{
-			player.shipThrust = 0;
-		}
-		else
-		{
-			player.shipThrust -= 0.03;
-		}
-	}
 
-	if (IsKeyDown(KEY_A))
+	if (alive)
 	{
-		player.rotation -= 3.0f;
-	}
-
-	if (IsKeyDown(KEY_D))
-	{
-		player.rotation += 3.0f;
+		player.Update();
 	}
 
 	if (IsKeyPressed(KEY_SPACE))
@@ -175,7 +175,7 @@ void Game::Update()
 		player.position.y = 820;
 	}
 
-	for (size_t i = 0; i < asteroidCount; i++)
+	for (size_t i = 0; i < maxAsteroids; i++)
 	{
 		if (asteroids[i].position.x >= 845)
 		{
@@ -223,41 +223,106 @@ void Game::Update()
 	//-------------------------------------------------------------------------------
 	//Collistion between asteroid and player
 	//-------------------------------------------------------------------------------
-	for (size_t i = 0; i < asteroidCount; i++)
+	for (size_t i = 0; i < maxAsteroids; i++)
 	{
-		if (CheckCollisionCircles(player.position, 10, asteroids[i].position, 40))
+		if (!asteroids[i].destroyed && alive)
 		{
-			alive = false;
+			if (CheckCollisionCircles(player.position, 10, asteroids[i].position, asteroids[i].size))
+			{
+				alive = false;
+				respawnTimer = 0;
+				lives--;
+				canSpawn = false;
+				player.position.x = 9000;
+
+			}
 		}
 	}
 	//-------------------------------------------------------------------------------
 
 
+
+	//-------------------------------------------------------------------------------
+	//Collistion between asteroid and spawn checker
+	//-------------------------------------------------------------------------------
+	for (size_t i = 0; i < maxAsteroids; i++)
+	{
+		if (!asteroids[i].destroyed && !alive)
+		{
+			if (!CheckCollisionCircles(spawnCheck.position, 65, asteroids[i].position, asteroids[i].size))
+			{
+				if (lives > 0 && !alive && canSpawn)
+				{
+					player.PlayerSpawn();
+					player.shipThrust = 0;
+					alive = true;
+				}
+			}
+			else if (!alive)
+			{
+				alive = false;
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------
+
+
+	if (!alive && lives > 0 && respawnTimer < 9.0f)
+	{
+		canSpawn = false;
+		respawnTimer += 0.05f;
+	}
+
+
 	//-------------------------------------------------------------------------------
 	//Collistion between asteroid and bullet
 	//-------------------------------------------------------------------------------
-	for (size_t i = 0; i < asteroidCount; i++)
+	for (size_t i = 0; i < maxAsteroids; i++)
 	{
 		for (size_t j = 0; j < bulletCount; j++)
 		{
-			if (CheckCollisionCircles(bullets[j].position, 2, asteroids[i].position, 40))
+			if (!asteroids[i].destroyed && bullets[j].isShooting)
 			{
-				asteroids[i].destroyed = true;
-				bullets[j].isShooting = false;
+				if (CheckCollisionCircles(bullets[j].position, 2, asteroids[i].position, asteroids[i].size))
+				{	
+					bullets[j].isShooting = false;
 
-				switch (asteroids[i].asteroidLevel)
-				{
-				case 1:
-					score += 100;
-					break;
-				case 2:
-					score += 150;
-					break;
-				case 3:
-					score += 250;
-					break;
-				default:
-					break;
+					for (size_t l = 0; l < 2; l++)
+					{
+
+						for (size_t k = 0; k < maxAsteroids; k++)
+						{
+							if (asteroids[k].destroyed && asteroids[i].asteroidLevel < 3)
+							{
+								asteroids[k].SpawnAsteroid(asteroids[i].asteroidLevel + 1);
+								asteroids[k].position.x = asteroids[i].position.x;
+								asteroids[k].position.y = asteroids[i].position.y;
+								break;
+							}							
+						}
+					}
+					
+					if (asteroids[i].asteroidLevel == 3)
+					{
+						spawnTimer++;
+					}
+
+					asteroids[i].destroyed = true;
+					
+					switch (asteroids[i].asteroidLevel)
+					{
+					case 1:
+						score += 100;
+						break;
+					case 2:
+						score += 150;
+						break;
+					case 3:
+						score += 250;
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		}		
@@ -269,6 +334,15 @@ void Game::Update()
 void Game::Draw()
 {
 	//player.Load("..\\Sprites\\Ship.png");
+
+	if (!alive && lives > 0)
+	{
+		DrawText("Ready", 355, 400, 30, WHITE);
+	}
+	else
+	{
+		ClearBackground(BLACK);
+	}
 
 	float angle = player.rotation * DEG2RAD;
 	angle += (PI/2);
@@ -291,8 +365,9 @@ void Game::Draw()
 	//	DrawTriangleLines(vl1, vl2, vl3, WHITE);
 	//	livesOffset += 40;
 	//}
+	DrawCircleLines(spawnCheck.position.x, spawnCheck.position.y, 65, DARKGRAY);
 
-	if (!alive)
+	if (!alive && lives < 0)
 	{
 		DrawText("You Died...", 325, 400, 30, WHITE);
 	}
@@ -301,25 +376,33 @@ void Game::Draw()
 		DrawTriangleLines(v1, v2, v3, WHITE);
 	}	
 
-	for (size_t i = 0; i < asteroidCount; i++)
+	for (size_t i = 0; i < maxAsteroids; i++)
 	{
 		if (!asteroids[i].destroyed)
 		{
-			DrawCircleLines(asteroids[i].position.x, asteroids[i].position.y, 40, WHITE);
-		}		
+			//asteroids[i].Draw();
+			DrawCircleLines(asteroids[i].position.x, asteroids[i].position.y, asteroids[i].size, WHITE);
+			//std::cout << "Drawing asteroid " << i << std::endl;
+		}
 	}
-	
+
 	for (size_t i = 0; i < bulletCount; i++)
 	{
 		if (bullets[i].isShooting == true)
 		{
-			std::cout << "bullet " << i << " is drawing" << std::endl;
+			//std::cout << "bullet " << i << " is drawing" << std::endl;
 			bullets[i].Draw();
 		}
 	}
 
 	DrawText(to_string(score).c_str(), 10, 10, 20, WHITE);
 
+	DrawText("Lives: ", 10, 30, 20, WHITE);
+	DrawText(to_string(lives).c_str(), 80, 30, 20, WHITE);
+
 	DrawText("Thrust: ", 600, 10, 20, WHITE);
 	DrawText(to_string(player.shipThrust).c_str(), 700, 10, 20, WHITE);
+
+	DrawText("Spawn Timer: ", 570, 30, 20, WHITE);
+	DrawText(to_string(spawnTimer).c_str(), 750, 30, 20, WHITE);
 }

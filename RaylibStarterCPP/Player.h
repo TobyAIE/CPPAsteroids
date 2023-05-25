@@ -9,6 +9,10 @@ public:
 	float shipThrust;
 	float playerHeight;
 
+	void PlayerSpawn();
+
+	void Update();
+
 private:
 
 };
