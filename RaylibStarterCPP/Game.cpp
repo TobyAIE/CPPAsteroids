@@ -280,17 +280,17 @@ void Game::Draw()
 
 	//DrawTexture(player.objectTexture, 400, 225, WHITE);
 
-	//int livesOffset = 0;
-	//
-	//for (size_t i = 0; i < lives; i++)
-	//{
-	//	Vector2 vl1 = { livesOffset += livesOffset/2, 50 };
-	//	Vector2 vl2 = { livesOffset, 80 };
-	//	Vector2 vl3 = { livesOffset += 10, 80 };
-	//
-	//	DrawTriangleLines(vl1, vl2, vl3, WHITE);
-	//	livesOffset += 40;
-	//}
+	int livesOffset = 0;
+	
+	for (size_t i = 0; i < lives; i++)
+	{
+		Vector2 vl1 = { livesOffset += livesOffset/2, 50 };
+		Vector2 vl2 = { livesOffset, 80 };
+		Vector2 vl3 = { livesOffset += 10, 80 };
+	
+		DrawTriangleLines(vl1, vl2, vl3, WHITE);
+		livesOffset += 40;
+	}
 
 	if (!alive)
 	{
