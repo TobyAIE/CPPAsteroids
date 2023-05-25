@@ -406,3 +406,8 @@ void Game::Draw()
 	DrawText("Spawn Timer: ", 570, 30, 20, WHITE);
 	DrawText(to_string(spawnTimer).c_str(), 750, 30, 20, WHITE);
 }
+
+void Game::RespawnPlayer()
+{
+
+}

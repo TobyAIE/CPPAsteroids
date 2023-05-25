@@ -17,6 +17,9 @@ public:
 	void Menu();
 
 private:
+
+	void RespawnPlayer();
+
 	int asteroidCount;
 
 	int maxAsteroids;
