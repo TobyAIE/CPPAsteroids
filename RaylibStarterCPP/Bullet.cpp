@@ -17,8 +17,8 @@ void Bullet::Update()
 	{
 		isShooting = false;
 	}	
-	position.x += bulletAngleX * 300 * dt;
-	position.y += bulletAngleY * 300 * dt;
+	position.x += bulletAngleX * 500 * dt;
+	position.y += bulletAngleY * 500 * dt;
 
 	if (!isShooting)
 	{

@@ -4,12 +4,12 @@
 #include <iostream>
 
 Player player;
-GameObject playerSpawner;
+
+GameObject spawnCheck;
 
 void Game::Menu()
 {
 	startGame = false;
-
 	while (!startGame)
 	{
 		BeginDrawing();
