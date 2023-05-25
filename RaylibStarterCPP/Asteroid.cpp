@@ -1,4 +1,5 @@
 #include "Asteroid.h"
+#include <iostream>
 Asteroid::Asteroid()
 {
 
@@ -17,4 +18,32 @@ void Asteroid::Update()
 		position.x = -800;
 		position.y = -800;
 	}
+}
+
+void Asteroid::Draw()
+{
+	DrawCircleLines(position.x, position.y, size, WHITE);
+}
+
+void Asteroid::SpawnAsteroid(int level)
+{
+	position.x = -40;
+	position.y = rand() % 800;
+	rotation = rand() % 360;
+	destroyed = false;
+	switch (level)
+	{
+	case 1:
+		size = 40;
+		break;
+	case 2:
+		size = 20;
+		break;
+	case 3:
+		size = 10;
+		break;
+	default:
+		break;
+	}
+	asteroidLevel = level;
 }

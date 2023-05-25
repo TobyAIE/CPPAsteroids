@@ -20,6 +20,8 @@ private:
 
 	int asteroidCount;
 
+	int maxAsteroids;
+
 	int score;
 
 	int bulletCount;
@@ -36,5 +38,9 @@ private:
 	bool alive;
 	bool canSpawn;
 	bool isShooting;
+
+	int spawnTimer;
+
+	int respawnTimer;
 };
 

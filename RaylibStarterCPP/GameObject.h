@@ -12,13 +12,6 @@ public:
 	Texture2D objectTexture;
 	Vector2 position;
 	float rotation;	
-	
-	struct Asteroid
-	{
-		Vector2 asteroidPos;
-		float asteroidRot;
-		float asteroidSize;
-	};
 
 private:	
 
