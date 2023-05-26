@@ -229,48 +229,42 @@ void Game::Update()
 			if (CheckCollisionCircles(player.position, 10, asteroids[i].position, asteroids[i].size))
 			{
 				alive = false;
-				//respawnTimer = 0;
 				lives--;
 				//canSpawn = false;
-				//player.position.x = 9000;
-
-				//PlayerRespawn();
-
 			}
+			//else 
+			//{
+			//	canSpawn = true;
+			//}
 		}
 	}
 	//-------------------------------------------------------------------------------
 
-	if (!alive)
-	{
-		PlayerRespawn();
-	}
+	
 
 	//-------------------------------------------------------------------------------
 	//Collistion between asteroid and spawn checker
 	//-------------------------------------------------------------------------------
 	for (size_t i = 0; i < maxAsteroids; i++)
 	{
-		if (!asteroids[i].destroyed && !alive)
+		if (!asteroids[i].destroyed)
 		{
 			if (CheckCollisionCircles(spawnCheck.position, 65, asteroids[i].position, asteroids[i].size))
 			{
+				std::cout << "Asteroid too close!!" << std::endl;
 				canSpawn = false;
-			}
-			else
-			{
-				canSpawn = true;
 			}
 		}
 	}
 	//-------------------------------------------------------------------------------
 
 
-	//if (!alive && lives > 0 && respawnTimer < 9.0f)
-	//{
-	//	canSpawn = false;
-	//	respawnTimer += 0.05f;
-	//}
+
+	if (!alive)
+	{
+		PlayerRespawn();
+	}
+
 
 
 	//-------------------------------------------------------------------------------
@@ -334,14 +328,14 @@ void Game::Draw()
 {
 	//player.Load("..\\Sprites\\Ship.png");
 
-	if (!alive && lives > 0)
-	{
-		DrawText("Ready", 355, 400, 30, WHITE);
-	}
-	else
-	{
-		ClearBackground(BLACK);
-	}
+	//if (!alive && lives > 0)
+	//{
+	//	DrawText("Ready", 355, 400, 30, WHITE);
+	//}
+	//else
+	//{
+	//	ClearBackground(BLACK);
+	//}
 
 	float angle = player.rotation * DEG2RAD;
 	angle += (PI / 2);
@@ -406,6 +400,12 @@ void Game::Draw()
 	//
 	//DrawText("Spawn Timer: ", 570, 30, 20, WHITE);
 	//DrawText(to_string(spawnTimer).c_str(), 750, 30, 20, WHITE);
+
+	DrawText("Can Spawn: ", 600, 10, 20, WHITE);
+	DrawText(to_string(canSpawn).c_str(), 750, 10, 20, WHITE);
+
+	DrawText("Alive: ", 600, 30, 20, WHITE);
+	DrawText(to_string(alive).c_str(), 750, 30, 20, WHITE);
 }
 
 void Game::PlayerRespawn()
