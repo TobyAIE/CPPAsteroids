@@ -18,7 +18,7 @@ void Game::Menu()
 
 		frameTimer++;		
 
-		if ((frameTimer/2) % 30)
+		if ((frameTimer/20) % 2 == 0)
 		{
 			DrawText("METEORITES", 200, 300, 60, WHITE);
 
@@ -146,10 +146,12 @@ void Game::Update()
 		}
 	}
 
+	//-------------------------------------------------------------------------------
 	//The code here constantly updates the players movement depending on how much thrust the ship has.
 	//Allows for Asteroids momentum movement.
 	player.position.x += cos(player.rotation * DEG2RAD) * player.shipThrust;
 	player.position.y += sin(player.rotation * DEG2RAD) * player.shipThrust;
+	//-------------------------------------------------------------------------------
 
 
 
@@ -251,19 +253,28 @@ void Game::Update()
 		{
 			if (CheckCollisionCircles(spawnCheck.position, 65, asteroids[i].position, asteroids[i].size))
 			{
-				std::cout << "Asteroid too close!!" << std::endl;
+				//std::cout << "Asteroid too close!!" << std::endl;
 				canSpawn = false;
+				break;
+			}
+			else if (!CheckCollisionCircles(spawnCheck.position, 65, asteroids[i].position, asteroids[i].size))
+			{
+				//std::cout << "Safe to Spawn" << std::endl;
+				canSpawn = true;
 			}
 		}
 	}
 	//-------------------------------------------------------------------------------
 
 
-
+	//-------------------------------------------------------------------------------
+	//Respawn player if they are dead
+	//-------------------------------------------------------------------------------
 	if (!alive)
 	{
 		PlayerRespawn();
 	}
+	//-------------------------------------------------------------------------------
 
 
 
@@ -326,16 +337,6 @@ void Game::Update()
 
 void Game::Draw()
 {
-	//player.Load("..\\Sprites\\Ship.png");
-
-	//if (!alive && lives > 0)
-	//{
-	//	DrawText("Ready", 355, 400, 30, WHITE);
-	//}
-	//else
-	//{
-	//	ClearBackground(BLACK);
-	//}
 
 	float angle = player.rotation * DEG2RAD;
 	angle += (PI / 2);
@@ -345,9 +346,7 @@ void Game::Draw()
 
 	ClearBackground(BLACK);
 
-	//DrawTexture(player.objectTexture, 400, 225, WHITE);
-
-	DrawCircleLines(spawnCheck.position.x, spawnCheck.position.y, 65, DARKGRAY);
+	//DrawCircleLines(spawnCheck.position.x, spawnCheck.position.y, 65, DARKGRAY);
 
 	int livesOffset = 0;
 	
@@ -361,14 +360,18 @@ void Game::Draw()
 		livesOffset += 25;
 	}
 
-
 	if (!alive && lives < 0)
 	{
 		DrawText("You Died...", 325, 400, 30, WHITE);
+		frameTimer++;
+	}
+	else if (alive)
+	{
+		DrawTriangleLines(v1, v2, v3, WHITE);
 	}
 	else
 	{
-		DrawTriangleLines(v1, v2, v3, WHITE);
+		ClearBackground(BLACK);
 	}
 
 	for (size_t i = 0; i < maxAsteroids; i++)
@@ -390,7 +393,10 @@ void Game::Draw()
 		}
 	}
 
-	DrawText(to_string(score).c_str(), 10, 10, 40, WHITE);
+	if (lives > -1)
+	{
+		DrawText(to_string(score).c_str(), 10, 10, 40, WHITE);
+	}	
 
 	//DrawText("Lives: ", 10, 30, 20, WHITE);
 	//DrawText(to_string(lives).c_str(), 80, 30, 20, WHITE);
@@ -400,12 +406,27 @@ void Game::Draw()
 	//
 	//DrawText("Spawn Timer: ", 570, 30, 20, WHITE);
 	//DrawText(to_string(spawnTimer).c_str(), 750, 30, 20, WHITE);
+	//
+	//DrawText("Can Spawn: ", 600, 10, 20, WHITE);
+	//DrawText(to_string(canSpawn).c_str(), 750, 10, 20, WHITE);
+	//
+	//DrawText("Alive: ", 600, 30, 20, WHITE);
+	//DrawText(to_string(alive).c_str(), 750, 30, 20, WHITE);
 
-	DrawText("Can Spawn: ", 600, 10, 20, WHITE);
-	DrawText(to_string(canSpawn).c_str(), 750, 10, 20, WHITE);
+	if (!alive && lives < 0)
+	{
+		if ((frameTimer/20) % 2 == 0)
+		{
+			DrawText("FINAL SCORE: ", 200, 500, 30, WHITE);
 
-	DrawText("Alive: ", 600, 30, 20, WHITE);
-	DrawText(to_string(alive).c_str(), 750, 30, 20, WHITE);
+			DrawText(to_string(score).c_str(), 435, 500, 30, WHITE);
+		}
+		else
+		{
+			ClearBackground(BLACK);
+		}
+	}
+
 }
 
 void Game::PlayerRespawn()

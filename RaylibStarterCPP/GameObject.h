@@ -8,8 +8,6 @@ using namespace std;
 class GameObject
 {
 public:
-	Image objectSprite;
-	Texture2D objectTexture;
 	Vector2 position;
 	float rotation;	
 
@@ -20,8 +18,6 @@ public:
 
 	GameObject();
 	~GameObject();
-
-	void Load(const char* filename);
 
 };
 

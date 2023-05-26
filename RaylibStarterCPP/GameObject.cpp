@@ -12,9 +12,3 @@ GameObject::~GameObject()
 {
 
 }
-
-void GameObject::Load(const char* filename)
-{
-	//objectSprite = LoadImage(filename);
-	//objectTexture = LoadTextureFromImage(objectSprite);
-}
