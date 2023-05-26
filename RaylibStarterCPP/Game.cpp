@@ -234,6 +234,8 @@ void Game::Update()
 				//canSpawn = false;
 				//player.position.x = 9000;
 
+				PlayerRespawn();
+
 			}
 		}
 	}
@@ -406,4 +408,14 @@ void Game::Draw()
 
 	DrawText("Spawn Timer: ", 570, 30, 20, WHITE);
 	DrawText(to_string(spawnTimer).c_str(), 750, 30, 20, WHITE);
+}
+
+void Game::PlayerRespawn()
+{
+	if (lives > 0)
+	{
+		alive = true;
+		player.PlayerSpawn();
+		player.shipThrust = 0;
+	}
 }

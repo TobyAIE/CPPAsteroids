@@ -42,5 +42,7 @@ private:
 	int spawnTimer;
 
 	int respawnTimer;
+
+	void PlayerRespawn();
 };
 
