@@ -234,14 +234,17 @@ void Game::Update()
 				//canSpawn = false;
 				//player.position.x = 9000;
 
-				PlayerRespawn();
+				//PlayerRespawn();
 
 			}
 		}
 	}
 	//-------------------------------------------------------------------------------
 
-
+	if (!alive)
+	{
+		PlayerRespawn();
+	}
 
 	//-------------------------------------------------------------------------------
 	//Collistion between asteroid and spawn checker
@@ -250,18 +253,13 @@ void Game::Update()
 	{
 		if (!asteroids[i].destroyed && !alive)
 		{
-			if (!CheckCollisionCircles(spawnCheck.position, 65, asteroids[i].position, asteroids[i].size))
+			if (CheckCollisionCircles(spawnCheck.position, 65, asteroids[i].position, asteroids[i].size))
 			{
-				if (lives > 0 && !alive && canSpawn)
-				{
-					player.PlayerSpawn();
-					player.shipThrust = 0;
-					alive = true;
-				}
+				canSpawn = false;
 			}
-			else if (!alive)
+			else
 			{
-				alive = false;
+				canSpawn = true;
 			}
 		}
 	}
@@ -355,11 +353,11 @@ void Game::Draw()
 
 	//DrawTexture(player.objectTexture, 400, 225, WHITE);
 
-	//DrawCircleLines(spawnCheck.position.x, spawnCheck.position.y, 65, DARKGRAY);
+	DrawCircleLines(spawnCheck.position.x, spawnCheck.position.y, 65, DARKGRAY);
 
 	int livesOffset = 0;
 	
-	for (size_t i = 0; i < lives; i++)
+	for (int i = 0; i < lives; i++)
 	{
 		Vector2 vl1 = { 30 + livesOffset, 50 };
 		Vector2 vl2 = { 20 + livesOffset, 80 };
@@ -400,19 +398,19 @@ void Game::Draw()
 
 	DrawText(to_string(score).c_str(), 10, 10, 40, WHITE);
 
-	DrawText("Lives: ", 10, 30, 20, WHITE);
-	DrawText(to_string(lives).c_str(), 80, 30, 20, WHITE);
-
-	DrawText("Thrust: ", 600, 10, 20, WHITE);
-	DrawText(to_string(player.shipThrust).c_str(), 700, 10, 20, WHITE);
-
-	DrawText("Spawn Timer: ", 570, 30, 20, WHITE);
-	DrawText(to_string(spawnTimer).c_str(), 750, 30, 20, WHITE);
+	//DrawText("Lives: ", 10, 30, 20, WHITE);
+	//DrawText(to_string(lives).c_str(), 80, 30, 20, WHITE);
+	//
+	//DrawText("Thrust: ", 600, 10, 20, WHITE);
+	//DrawText(to_string(player.shipThrust).c_str(), 700, 10, 20, WHITE);
+	//
+	//DrawText("Spawn Timer: ", 570, 30, 20, WHITE);
+	//DrawText(to_string(spawnTimer).c_str(), 750, 30, 20, WHITE);
 }
 
 void Game::PlayerRespawn()
 {
-	if (lives > 0)
+	if (lives >= 0 && canSpawn)
 	{
 		alive = true;
 		player.PlayerSpawn();
