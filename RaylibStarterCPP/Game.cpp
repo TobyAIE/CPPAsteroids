@@ -353,19 +353,19 @@ void Game::Draw()
 
 	//DrawTexture(player.objectTexture, 400, 225, WHITE);
 
-	DrawCircleLines(spawnCheck.position.x, spawnCheck.position.y, 65, DARKGRAY);
+	//DrawCircleLines(spawnCheck.position.x, spawnCheck.position.y, 65, DARKGRAY);
 
-	//int livesOffset = 0;
-	//
-	//for (size_t i = 0; i < lives; i++)
-	//{
-	//	Vector2 vl1 = { livesOffset += livesOffset / 2, 50 };
-	//	Vector2 vl2 = { livesOffset, 80 };
-	//	Vector2 vl3 = { livesOffset += 10, 80 };
-	//
-	//	DrawTriangleLines(vl1, vl2, vl3, WHITE);
-	//	livesOffset += 40;
-	//}
+	int livesOffset = 0;
+	
+	for (size_t i = 0; i < lives; i++)
+	{
+		Vector2 vl1 = { 30 + livesOffset, 50 };
+		Vector2 vl2 = { 20 + livesOffset, 80 };
+		Vector2 vl3 = { 40 + livesOffset, 80 };
+	
+		DrawTriangleLines(vl1, vl2, vl3, WHITE);
+		livesOffset += 25;
+	}
 
 
 	if (!alive && lives < 0)
@@ -396,10 +396,10 @@ void Game::Draw()
 		}
 	}
 
-	DrawText(to_string(score).c_str(), 10, 10, 20, WHITE);
+	DrawText(to_string(score).c_str(), 10, 10, 40, WHITE);
 
-	DrawText("Lives: ", 10, 30, 20, WHITE);
-	DrawText(to_string(lives).c_str(), 80, 30, 20, WHITE);
+	//DrawText("Lives: ", 10, 30, 20, WHITE);
+	//DrawText(to_string(lives).c_str(), 80, 30, 20, WHITE);
 
 	DrawText("Thrust: ", 600, 10, 20, WHITE);
 	DrawText(to_string(player.shipThrust).c_str(), 700, 10, 20, WHITE);
