@@ -229,10 +229,10 @@ void Game::Update()
 			if (CheckCollisionCircles(player.position, 10, asteroids[i].position, asteroids[i].size))
 			{
 				alive = false;
-				respawnTimer = 0;
+				//respawnTimer = 0;
 				lives--;
-				canSpawn = false;
-				player.position.x = 9000;
+				//canSpawn = false;
+				//player.position.x = 9000;
 
 			}
 		}
@@ -266,11 +266,11 @@ void Game::Update()
 	//-------------------------------------------------------------------------------
 
 
-	if (!alive && lives > 0 && respawnTimer < 9.0f)
-	{
-		canSpawn = false;
-		respawnTimer += 0.05f;
-	}
+	//if (!alive && lives > 0 && respawnTimer < 9.0f)
+	//{
+	//	canSpawn = false;
+	//	respawnTimer += 0.05f;
+	//}
 
 
 	//-------------------------------------------------------------------------------
