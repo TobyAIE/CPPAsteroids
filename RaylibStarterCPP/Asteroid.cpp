@@ -9,6 +9,9 @@ Asteroid::~Asteroid()
 
 }
 
+//-------------------------------------------------------------------------------
+//Updates the position of the asteroid based on its rotation
+//-------------------------------------------------------------------------------
 void Asteroid::Update()
 {
 	position.x += cos(rotation * DEG2RAD) * 1.5f;
@@ -19,12 +22,25 @@ void Asteroid::Update()
 		position.y = -800;
 	}
 }
+//-------------------------------------------------------------------------------
 
+
+
+//-------------------------------------------------------------------------------
+// Draws the Asteroid based on position and size
+//-------------------------------------------------------------------------------
 void Asteroid::Draw()
 {
 	DrawCircleLines(position.x, position.y, size, WHITE);
 }
+//-------------------------------------------------------------------------------
 
+
+
+//-------------------------------------------------------------------------------
+//Will spawn an asteroid in off-screen at a random y position
+// - Requres a 'level' for the asteroid which changes its size
+//-------------------------------------------------------------------------------
 void Asteroid::SpawnAsteroid(int level)
 {
 	position.x = -40;
@@ -47,3 +63,4 @@ void Asteroid::SpawnAsteroid(int level)
 	}
 	asteroidLevel = level;
 }
+//-------------------------------------------------------------------------------

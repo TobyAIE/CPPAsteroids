@@ -7,6 +7,9 @@ Player player;
 
 GameObject spawnCheck;
 
+//-------------------------------------------------------------------------------
+//Creates a menu screen with blinking text
+//-------------------------------------------------------------------------------
 void Game::Menu()
 {
 	startGame = false;
@@ -34,13 +37,25 @@ void Game::Menu()
 		EndDrawing();
 	}	
 }
+//-------------------------------------------------------------------------------
 
+
+
+//-------------------------------------------------------------------------------
+// Destroys arrays
+//-------------------------------------------------------------------------------
 void Game::DeInit()
 {
 	delete[] asteroids;
 	delete[] bullets;
 }
+//-------------------------------------------------------------------------------
 
+
+
+//-------------------------------------------------------------------------------
+//Initialies the game and all objects in game
+//-------------------------------------------------------------------------------
 void Game::Init()
 {
 	alive = true;
@@ -82,6 +97,7 @@ void Game::Init()
 	}
 
 }
+//-------------------------------------------------------------------------------
 
 void Game::Update()
 {
@@ -103,17 +119,33 @@ void Game::Update()
 	}
 	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//Updates all active asteroids
+	//-------------------------------------------------------------------------------
 	for (size_t i = 0; i < maxAsteroids; i++)
 	{
 		asteroids[i].Update();
 	}
+	//-------------------------------------------------------------------------------
 
 
+
+	//-------------------------------------------------------------------------------
+	//Updates the player if they are alives
+	//-------------------------------------------------------------------------------
 	if (alive)
 	{
 		player.Update();
 	}
+	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//If the player is alive, when they press the space bar the ship will shoot
+	//-------------------------------------------------------------------------------
 	if (IsKeyPressed(KEY_SPACE))
 	{
 		//BulletShoot();
@@ -136,7 +168,13 @@ void Game::Update()
 			}
 		}
 	}
+	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//Updates all active bullets
+	//-------------------------------------------------------------------------------
 	for (size_t i = 0; i < bulletCount; i++)
 	{
 		if (bullets[i].isShooting == true)
@@ -145,10 +183,14 @@ void Game::Update()
 			bullets[i].Update();
 		}
 	}
+	//-------------------------------------------------------------------------------
+
+
 
 	//-------------------------------------------------------------------------------
 	//The code here constantly updates the players movement depending on how much thrust the ship has.
 	//Allows for Asteroids momentum movement.
+	//-------------------------------------------------------------------------------
 	player.position.x += cos(player.rotation * DEG2RAD) * player.shipThrust;
 	player.position.y += sin(player.rotation * DEG2RAD) * player.shipThrust;
 	//-------------------------------------------------------------------------------
@@ -337,17 +379,29 @@ void Game::Update()
 
 void Game::Draw()
 {
-
+	//-------------------------------------------------------------------------------
+	//Sets the verticies of the triangle based of players position and rotation
+	//-------------------------------------------------------------------------------
 	float angle = player.rotation * DEG2RAD;
 	angle += (PI / 2);
 	Vector2 v1 = { player.position.x + sinf(angle) * (player.playerHeight), player.position.y - cosf(angle) * (player.playerHeight) };
 	Vector2 v2 = { player.position.x - cosf(angle) * (player.playerHeight / 2), player.position.y - sinf(angle) * (player.playerHeight / 2) };
 	Vector2 v3 = { player.position.x + cosf(angle) * (player.playerHeight / 2), player.position.y + sinf(angle) * (player.playerHeight / 2) };
+	//-------------------------------------------------------------------------------
 
 	ClearBackground(BLACK);
 
+	//-------------------------------------------------------------------------------
+	// Draws a circle showing the spawn area. For Debugging.
+	//-------------------------------------------------------------------------------
 	//DrawCircleLines(spawnCheck.position.x, spawnCheck.position.y, 65, DARKGRAY);
+	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//Displays the players avaliable lives as ships in the top left corner
+	//-------------------------------------------------------------------------------
 	int livesOffset = 0;
 	
 	for (int i = 0; i < lives; i++)
@@ -359,7 +413,19 @@ void Game::Draw()
 		DrawTriangleLines(vl1, vl2, vl3, WHITE);
 		livesOffset += 25;
 	}
+	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//This will check the state of the player and draw.
+	// - if the player has died and has no lives left: "You Died..." will be displayed
+	// instead of the player
+	// 
+	// - if the player is alive: draws the player
+	// 
+	// - any other conditions: Draws nothing
+	//-------------------------------------------------------------------------------
 	if (!alive && lives < 0)
 	{
 		DrawText("You Died...", 325, 400, 30, WHITE);
@@ -371,19 +437,31 @@ void Game::Draw()
 	}
 	else
 	{
-		ClearBackground(BLACK);
 	}
+	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//This function goes through every active asteroid and draws them using the
+	// asteroid's 'Draw' function.
+	//-------------------------------------------------------------------------------
 	for (size_t i = 0; i < maxAsteroids; i++)
 	{
 		if (!asteroids[i].destroyed)
 		{
-			//asteroids[i].Draw();
-			DrawCircleLines(asteroids[i].position.x, asteroids[i].position.y, asteroids[i].size, WHITE);
+			asteroids[i].Draw();
 			//std::cout << "Drawing asteroid " << i << std::endl;
 		}
 	}
+	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//This function goes through every active bullet and draws them using the
+	// bullet's 'Draw' function.
+	//-------------------------------------------------------------------------------
 	for (size_t i = 0; i < bulletCount; i++)
 	{
 		if (bullets[i].isShooting == true)
@@ -392,12 +470,26 @@ void Game::Draw()
 			bullets[i].Draw();
 		}
 	}
+	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//When the game is running this displays the players current score in the top
+	// left corner.
+	//-------------------------------------------------------------------------------
 	if (lives > -1)
 	{
 		DrawText(to_string(score).c_str(), 10, 10, 40, WHITE);
 	}	
+	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//Debug text to check different variables
+	// Variables: lives, shipThrust, spawnTimer, canSpawn, alive
+	//-------------------------------------------------------------------------------
 	//DrawText("Lives: ", 10, 30, 20, WHITE);
 	//DrawText(to_string(lives).c_str(), 80, 30, 20, WHITE);
 	//
@@ -412,7 +504,13 @@ void Game::Draw()
 	//
 	//DrawText("Alive: ", 600, 30, 20, WHITE);
 	//DrawText(to_string(alive).c_str(), 750, 30, 20, WHITE);
+	//-------------------------------------------------------------------------------
 
+
+
+	//-------------------------------------------------------------------------------
+	//When you lose all your lives the fianl score is displayed in blinking text
+	//-------------------------------------------------------------------------------
 	if (!alive && lives < 0)
 	{
 		if ((frameTimer/20) % 2 == 0)
@@ -426,9 +524,13 @@ void Game::Draw()
 			ClearBackground(BLACK);
 		}
 	}
-
+	//-------------------------------------------------------------------------------
 }
 
+
+//-------------------------------------------------------------------------------
+//PlayerRespawn: Checks if the player can respawn and if yes, respawns the player
+//-------------------------------------------------------------------------------
 void Game::PlayerRespawn()
 {
 	if (lives >= 0 && canSpawn)
@@ -438,3 +540,4 @@ void Game::PlayerRespawn()
 		player.shipThrust = 0;
 	}
 }
+//-------------------------------------------------------------------------------

@@ -8,6 +8,11 @@ Bullet::~Bullet()
 
 }
 
+
+
+//-------------------------------------------------------------------------------
+//Updates the position of the bullet
+//-------------------------------------------------------------------------------
 void Bullet::Update()
 {
 	float dt = GetFrameTime();
@@ -26,12 +31,25 @@ void Bullet::Update()
 		position.y = -400;
 	}
 }
+//-------------------------------------------------------------------------------
 
+
+
+//-------------------------------------------------------------------------------
+//Draws the bullet based on its position
+//-------------------------------------------------------------------------------
 void Bullet::Draw()
 {
 	DrawCircle(position.x, position.y, 2, WHITE);
 }
+//-------------------------------------------------------------------------------
 
+
+
+//-------------------------------------------------------------------------------
+//Initialises a bullet by setting the position of it to be at the top of the players
+// ship and sets the rotation to the players current rotation
+//-------------------------------------------------------------------------------
 void Bullet::BulletInit(GameObject player, Vector2 shipTop)
 {
 	bulletAngleX = cos(player.rotation * DEG2RAD);
@@ -41,3 +59,4 @@ void Bullet::BulletInit(GameObject player, Vector2 shipTop)
 
 	lifeTimer = 0;
 }
+//-------------------------------------------------------------------------------
