@@ -400,8 +400,8 @@ void Game::Draw()
 
 	DrawText(to_string(score).c_str(), 10, 10, 40, WHITE);
 
-	//DrawText("Lives: ", 10, 30, 20, WHITE);
-	//DrawText(to_string(lives).c_str(), 80, 30, 20, WHITE);
+	DrawText("Lives: ", 10, 30, 20, WHITE);
+	DrawText(to_string(lives).c_str(), 80, 30, 20, WHITE);
 
 	DrawText("Thrust: ", 600, 10, 20, WHITE);
 	DrawText(to_string(player.shipThrust).c_str(), 700, 10, 20, WHITE);
