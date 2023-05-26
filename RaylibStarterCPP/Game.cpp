@@ -234,6 +234,8 @@ void Game::Update()
 				//canSpawn = false;
 				//player.position.x = 9000;
 
+				PlayerRespawn();
+
 			}
 		}
 	}
@@ -410,5 +412,10 @@ void Game::Draw()
 
 void Game::PlayerRespawn()
 {
-
+	if (lives > 0)
+	{
+		alive = true;
+		player.PlayerSpawn();
+		player.shipThrust = 0;
+	}
 }
