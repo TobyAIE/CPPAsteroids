@@ -28,7 +28,7 @@ void Player::PlayerSpawn()
 //-------------------------------------------------------------------------------
 void Player::Update()
 {
-	if (IsKeyDown(KEY_W) && shipThrust < 40.0f)
+	if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP) && shipThrust < 40.0f)
 	{
 		shipThrust += 0.06f;
 	}
@@ -44,12 +44,12 @@ void Player::Update()
 		}
 	}
 
-	if (IsKeyDown(KEY_A))
+	if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT))
 	{
 		rotation -= 3.0f;
 	}
 
-	if (IsKeyDown(KEY_D))
+	if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT))
 	{
 		rotation += 3.0f;
 	}
